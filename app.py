@@ -11,8 +11,9 @@ logging.basicConfig(level=logging.DEBUG)
 GOOGLE_API_KEY = 'AIzaSyB-KxlE38SR5ChV_5A7Wxp67VbQvumf8q8'
 genai.configure(api_key = GOOGLE_API_KEY)
 
-
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')
+pp = Flask(__name__, template_folder='.', static_folder='.')
+# app = Flask(__name__)
 app.config['SECRET_KEY'] = 'AIzaSyB-KxlE38SR5ChV_5A7Wxp67VbQvumf8q8'
 CORS(app)  # Enable CORS for all routes
 
@@ -93,14 +94,16 @@ def index():
             return render_template('result.html', recommendations=response)
         except ValueError as e:
             error_message = str(e)
-            return send_from_directory('', 'index.html', error_message=error_message)
+            return render_template('index.html', error_message=error_message)
 
-    return send_from_directory('', 'index.html')
+    return render_template('index.html')
 
-@app.route('/result', methods=['GET', 'POST'])
+
+@app.route('/result', methods=['GET'])
 def result():
     recommendations = request.args.get('recommendations', '')
-    return render_template('result.html', recommendations=recommendations)
-    
+    return render_template('result.html', recommendations=recommendations)    
+
+
 if __name__ == '__main__':
     app.run(debug=True)
